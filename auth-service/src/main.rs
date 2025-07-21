@@ -6,11 +6,10 @@ async fn main() {
         .await
         .expect("Failed to build app");
 
+    // copied the address from the app so we could
+    // use it in the print statement below
+    let local_addr = app.address.clone();
     app.run().await.expect("Failed to run app");
 
-    // Here we are using ip 0.0.0.0 so the service is listening on all the configured network interfaces.
-    // This is needed for Docker to work, which we will add later on.
-    // See: https://stackoverflow.com/questions/39525820/docker-port-forwarding-not-working
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
-    println!("listening on {}", listener.local_addr().unwrap());
+    println!("listening on {local_addr}");
 }
