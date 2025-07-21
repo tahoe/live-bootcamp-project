@@ -6,10 +6,5 @@ async fn main() {
         .await
         .expect("Failed to build app");
 
-    // copied the address from the app so we could
-    // use it in the print statement below
-    let local_addr = app.address.clone();
     app.run().await.expect("Failed to run app");
-
-    println!("listening on {local_addr}");
 }
