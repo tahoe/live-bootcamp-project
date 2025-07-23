@@ -1,6 +1,5 @@
-use axum::http::StatusCode;
 use axum::routing::post;
-use axum::{response::IntoResponse, serve::Serve, Router};
+use axum::{response::IntoResponse, serve::Serve, Json, Router};
 use std::error::Error;
 use tower_http::services::ServeDir;
 
@@ -39,22 +38,22 @@ impl Application {
     }
 }
 
-async fn signup() -> impl IntoResponse {
-    StatusCode::OK.into_response()
+async fn signup() -> Json<Vec<String>> {
+    Json(vec!["sign".to_owned(), "up".to_owned()])
 }
 
 async fn login() -> impl IntoResponse {
-    StatusCode::OK.into_response()
+    Json(vec!["log".to_owned(), "in".to_owned()])
 }
 
 async fn logout() -> impl IntoResponse {
-    StatusCode::OK.into_response()
+    Json(vec!["log".to_owned(), "out".to_owned()])
 }
 
 async fn verify_2fa() -> impl IntoResponse {
-    StatusCode::OK.into_response()
+    Json(vec!["verify".to_owned(), "2fa".to_owned()])
 }
 
 async fn verify_token() -> impl IntoResponse {
-    StatusCode::OK.into_response()
+    Json(vec!["verify".to_owned(), "token".to_owned()])
 }
