@@ -1,5 +1,7 @@
 #![allow(unused)]
 use auth_service::Application;
+use reqwest::Client;
+use std::collections::HashMap;
 
 pub struct TestApp {
     pub address: String,
@@ -12,16 +14,17 @@ impl TestApp {
             .await
             .expect("Failed to build app");
 
-        // let address = format!("http://{}", app.address.clone());
+        let address = format!("http://{}", app.address.clone());
 
         #[allow(clippy::let_underscore_future)]
         let _ = tokio::spawn(app.run());
 
-        // TODO: create an http_client,using reqwest library, named http_client
-        // let http_client = todo!();
-        todo!();
+        let http_client = Client::new();
 
-        // TODO:  create a `TestApp` instance and return it
+        Self {
+            address,
+            http_client,
+        }
     }
 
     pub async fn get_root(&self) -> reqwest::Response {
@@ -33,40 +36,65 @@ impl TestApp {
     }
 
     pub async fn get_signup(&self) -> reqwest::Response {
+        let mut map = HashMap::new();
+        map.insert("email", "test@email.com");
+        map.insert("password", "password");
+        map.insert("requires2FA", "duh, need 2fa");
         self.http_client
-            .get(format!("{}/signup", &self.address))
+            .post(format!("{}/signup", &self.address))
+            .json(&map)
             .send()
             .await
             .expect("Failed to execute request.")
     }
 
     pub async fn get_login(&self) -> reqwest::Response {
+        let mut map = HashMap::new();
+        map.insert("email", "test@email.com");
+        map.insert("password", "password");
+        map.insert("requires2FA", "duh, need 2fa");
         self.http_client
-            .get(format!("{}/login", &self.address))
+            .post(format!("{}/login", &self.address))
+            .json(&map)
             .send()
             .await
             .expect("Failed to execute request.")
     }
 
     pub async fn get_logout(&self) -> reqwest::Response {
+        let mut map = HashMap::new();
+        map.insert("email", "test@email.com");
+        map.insert("password", "password");
+        map.insert("requires2FA", "duh, need 2fa");
         self.http_client
-            .get(format!("{}/logout", &self.address))
+            .post(format!("{}/logout", &self.address))
+            .json(&map)
             .send()
             .await
             .expect("Failed to execute request.")
     }
 
     pub async fn get_verify_2fa(&self) -> reqwest::Response {
+        let mut map = HashMap::new();
+        map.insert("email", "test@email.com");
+        map.insert("password", "password");
+        map.insert("requires2FA", "duh, need 2fa");
         self.http_client
-            .get(format!("{}/verify_2fa", &self.address))
+            .post(format!("{}/verify_2fa", &self.address))
+            .json(&map)
             .send()
             .await
             .expect("Failed to execute request.")
     }
 
     pub async fn get_verify_token(&self) -> reqwest::Response {
+        let mut map = HashMap::new();
+        map.insert("email", "test@email.com");
+        map.insert("password", "password");
+        map.insert("requires2FA", "duh, need 2fa");
         self.http_client
-            .get(format!("{}/verify_token", &self.address))
+            .post(format!("{}/verify_token", &self.address))
+            .json(&map)
             .send()
             .await
             .expect("Failed to execute request.")
