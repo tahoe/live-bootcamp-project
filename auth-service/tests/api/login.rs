@@ -4,7 +4,7 @@ use crate::helpers::TestApp;
 async fn login_returns_ok() {
     let app = TestApp::new().await;
 
-    let response = app.get_login().await;
+    let response = app.post_login().await;
 
     assert_eq!(response.status().as_u16(), 200);
 }

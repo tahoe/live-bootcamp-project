@@ -35,7 +35,7 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn get_signup(&self) -> reqwest::Response {
+    pub async fn post_signup(&self) -> reqwest::Response {
         let mut map = HashMap::new();
         map.insert("email", "test@email.com");
         map.insert("password", "password");
@@ -48,7 +48,7 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn get_login(&self) -> reqwest::Response {
+    pub async fn post_login(&self) -> reqwest::Response {
         let mut map = HashMap::new();
         map.insert("email", "test@email.com");
         map.insert("password", "password");
@@ -61,7 +61,7 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn get_logout(&self) -> reqwest::Response {
+    pub async fn post_logout(&self) -> reqwest::Response {
         let mut map = HashMap::new();
         map.insert("email", "test@email.com");
         map.insert("password", "password");
@@ -74,7 +74,7 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn get_verify_2fa(&self) -> reqwest::Response {
+    pub async fn post_verify_2fa(&self) -> reqwest::Response {
         let mut map = HashMap::new();
         map.insert("email", "test@email.com");
         map.insert("password", "password");
@@ -87,7 +87,7 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn get_verify_token(&self) -> reqwest::Response {
+    pub async fn post_verify_token(&self) -> reqwest::Response {
         let mut map = HashMap::new();
         map.insert("email", "test@email.com");
         map.insert("password", "password");
