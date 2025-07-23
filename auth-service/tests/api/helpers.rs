@@ -2,6 +2,7 @@
 use auth_service::Application;
 use reqwest::Client;
 use std::collections::HashMap;
+use uuid::Uuid;
 
 pub struct TestApp {
     pub address: String,
@@ -35,14 +36,13 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn post_signup(&self) -> reqwest::Response {
-        let mut map = HashMap::new();
-        map.insert("email", "test@email.com");
-        map.insert("password", "password");
-        map.insert("requires2FA", "duh, need 2fa");
+    pub async fn post_signup<Body>(&self, body: &Body) -> reqwest::Response
+    where
+        Body: serde::Serialize,
+    {
         self.http_client
             .post(format!("{}/signup", &self.address))
-            .json(&map)
+            .json(body)
             .send()
             .await
             .expect("Failed to execute request.")
@@ -99,4 +99,8 @@ impl TestApp {
             .await
             .expect("Failed to execute request.")
     }
+}
+
+pub fn get_random_email() -> String {
+    format!("{}@example.com", Uuid::new_v4())
 }
