@@ -82,13 +82,13 @@ jobs:
       run: sudo apt-get install sshpass
 
     - name: Copy compose.yml to droplet
-      run: sshpass -v -p '${{ secrets.DROPLET_PASSWORD }}' scp -o StrictHostKeyChecking=no compose.yml root@${{ vars.DROPLET_IP }}:~
+      run: scp -o StrictHostKeyChecking=no compose.yml ${{vars.DROPLET_USER}}@${{ vars.DROPLET_IP }}:
 
     - name: Deploy
       uses: appleboy/ssh-action@master
       with:
         host: ${{ vars.DROPLET_IP }}
-        username: root
+        username: ${{vars.DROPLET_USER}}
         password: ${{ secrets.DROPLET_PASSWORD }}
         script: |
           cd ~
