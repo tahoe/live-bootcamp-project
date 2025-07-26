@@ -5,7 +5,7 @@ services:
     environment: # set up environment variables
       AUTH_SERVICE_IP: ${AUTH_SERVICE_IP:-localhost} # Use localhost as the default value
     ports:
-      - "80:80" # expose port 8000 so that applications outside the container can connect to it 
+      - "8000:8000" # expose port 8000 so that applications outside the container can connect to it 
     depends_on: # only run app-service after auth-service has started
       auth-service:
         condition: service_started
