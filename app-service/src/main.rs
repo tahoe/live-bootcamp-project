@@ -32,7 +32,7 @@ struct IndexTemplate {
 }
 
 async fn root() -> impl IntoResponse {
-    let mut address = env::var("AUTH_SERVICE_IP").unwrap_or("localhost".to_owned());
+    let mut address = env::var("AUTH_SERVICE_IP").unwrap_or("rust-api.durling.net".to_owned());
     if address.is_empty() {
         address = "localhost".to_owned();
     }
@@ -60,7 +60,8 @@ async fn protected(jar: CookieJar) -> impl IntoResponse {
         "token": &jwt_cookie.value(),
     });
 
-    let auth_hostname = env::var("AUTH_SERVICE_HOST_NAME").unwrap_or("0.0.0.0".to_owned());
+    let auth_hostname =
+        env::var("AUTH_SERVICE_HOST_NAME").unwrap_or("rust-api.durling.net".to_owned());
     let url = format!("http://{auth_hostname}/verify-token");
 
     let response = match api_client.post(&url).json(&verify_token_body).send().await {
