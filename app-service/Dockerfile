@@ -24,5 +24,7 @@ FROM debian:buster-slim AS runtime
 WORKDIR /app
 COPY --from=builder /app/target/release/app-service /usr/local/bin
 COPY --from=builder /app/assets /app/assets
-ENV AUTH_SERVICE_HOST_NAME=auth-service
+# ENV AUTH_SERVICE_HOST_NAME=auth-service
+ENV AUTH_SERVICE_HOST_NAME=rust-auth.durling.net
+ENV AUTH_SERVICE_IP=rust-auth.durling.net
 ENTRYPOINT ["/usr/local/bin/app-service"]
