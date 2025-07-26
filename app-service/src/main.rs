@@ -18,9 +18,7 @@ async fn main() {
         .route("/", get(root))
         .route("/protected", get(protected));
 
-    let listener = tokio::net::TcpListener::bind("127.0.0.1:8000")
-        .await
-        .unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8000").await.unwrap();
 
     println!("listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
@@ -62,7 +60,7 @@ async fn protected(jar: CookieJar) -> impl IntoResponse {
         "token": &jwt_cookie.value(),
     });
 
-    let auth_hostname = env::var("AUTH_SERVICE_HOST_NAME").unwrap_or("127.0.0.1".to_owned());
+    let auth_hostname = env::var("AUTH_SERVICE_HOST_NAME").unwrap_or("0.0.0.0".to_owned());
     let url = format!("http://{}:3000/verify-token", auth_hostname);
 
     let response = match api_client.post(&url).json(&verify_token_body).send().await {
