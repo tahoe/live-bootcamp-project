@@ -23,6 +23,15 @@ impl HashmapUserStore {
         self.users.insert(user.email.to_owned(), user);
         Ok(())
     }
+
+    pub fn get_user(&mut self, email: &str) -> Result<User, UserStoreError> {
+        let user_ret = self.users.get(email);
+        if let Some(user) = user_ret {
+            Ok(user.clone())
+        } else {
+            Err(UserStoreError::UserNotFound)
+        }
+    }
 }
 
 #[cfg(test)]
@@ -39,11 +48,11 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_user() {
-        // let user = User::new("test@test.com".to_owned(), "password".to_owned(), true);
-        // let users = HashMap::new();
-        // let mut mapper = HashmapUserStore { users };
-        // let _ = mapper.add_user(user.clone());
-        // assert_eq!(mapper.users.get("test@test.com"), Some(&user.clone()));
+        let user = User::new("test@test.com".to_owned(), "password".to_owned(), true);
+        let users = HashMap::new();
+        let mut mapper = HashmapUserStore { users };
+        let _ = mapper.add_user(user.clone());
+        assert_eq!(mapper.get_user("test@test.com"), Ok(user.clone()));
         todo!()
     }
 
