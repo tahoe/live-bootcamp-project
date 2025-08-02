@@ -16,9 +16,9 @@ pub struct HashmapUserStore {
 }
 
 impl HashmapUserStore {
-    pub fn new() -> HashmapUserStore {
+    pub fn new() -> Self {
         let users = HashMap::new();
-        HashmapUserStore { users }
+        Self { users }
     }
 
     pub fn add_user(&mut self, user: User) -> Result<(), UserStoreError> {
