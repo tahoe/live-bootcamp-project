@@ -1,23 +1,37 @@
 #![allow(unused, unused_imports)]
 use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
-// use reqwest::header::UPGRADE_INSECURE_REQUESTS;
 use serde::{Deserialize, Serialize};
 
-use crate::{app_state::AppState, domain::User};
+use crate::{
+    app_state::AppState,
+    domain::{AuthAPIError, Email, Password, User},
+};
 
 pub async fn signup(
     State(state): State<AppState>,
     Json(request): Json<SignupRequest>,
-) -> impl IntoResponse {
+) -> Result<impl IntoResponse, AuthAPIError> {
+    let email =
+        Email::parse(request.email.clone()).map_err(|_| AuthAPIError::InvalidCredentials)?;
+    let password =
+        Password::parse(request.password.clone()).map_err(|_| AuthAPIError::InvalidCredentials)?;
     let user = User::new(request.email, request.password, request.requires_2fa);
 
-    let user_store = state.user_store.write().await;
+    let mut user_store = state.user_store.write().await;
+
+    if user_store.get_user(&user.email).is_ok() {
+        return Err(AuthAPIError::UserAlreadyExists);
+    }
+
+    if user_store.add_user(user).is_err() {
+        return Err(AuthAPIError::UnexpectedError);
+    }
 
     let response = Json(SignupResponse {
         message: "User created successfully!".to_string(),
     });
 
-    (StatusCode::CREATED, response)
+    Ok((StatusCode::CREATED, response))
 }
 
 #[derive(Deserialize)]
