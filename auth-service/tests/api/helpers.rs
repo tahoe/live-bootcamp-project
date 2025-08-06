@@ -53,52 +53,32 @@ impl TestApp {
     }
 
     pub async fn post_login(&self) -> reqwest::Response {
-        let mut map = HashMap::new();
-        map.insert("email", "test@email.com");
-        map.insert("password", "password");
-        map.insert("requires2FA", "duh, need 2fa");
         self.http_client
             .post(format!("{}/login", &self.address))
-            .json(&map)
             .send()
             .await
             .expect("Failed to execute request.")
     }
 
     pub async fn post_logout(&self) -> reqwest::Response {
-        let mut map = HashMap::new();
-        map.insert("email", "test@email.com");
-        map.insert("password", "password");
-        map.insert("requires2FA", "duh, need 2fa");
         self.http_client
             .post(format!("{}/logout", &self.address))
-            .json(&map)
             .send()
             .await
             .expect("Failed to execute request.")
     }
 
     pub async fn post_verify_2fa(&self) -> reqwest::Response {
-        let mut map = HashMap::new();
-        map.insert("email", "test@email.com");
-        map.insert("password", "password");
-        map.insert("requires2FA", "duh, need 2fa");
         self.http_client
             .post(format!("{}/verify_2fa", &self.address))
-            .json(&map)
             .send()
             .await
             .expect("Failed to execute request.")
     }
 
     pub async fn post_verify_token(&self) -> reqwest::Response {
-        let mut map = HashMap::new();
-        map.insert("email", "test@email.com");
-        map.insert("password", "password");
-        map.insert("requires2FA", "duh, need 2fa");
         self.http_client
             .post(format!("{}/verify_token", &self.address))
-            .json(&map)
             .send()
             .await
             .expect("Failed to execute request.")
