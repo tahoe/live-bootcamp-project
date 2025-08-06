@@ -1,6 +1,6 @@
 use app_state::AppState;
-use axum::routing::post;
-use axum::{serve::Serve, Router};
+use axum::{routing::post, serve::Serve, Router};
+use serde::{Deserialize, Serialize};
 use std::error::Error;
 use tower_http::services::ServeDir;
 
@@ -43,4 +43,9 @@ impl Application {
         println!("listening on {}", &self.address);
         self.server.await
     }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct ErrorResponse {
+    pub error: String,
 }
