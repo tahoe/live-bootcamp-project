@@ -35,7 +35,7 @@ pub async fn login(
 
     let updated_jar = jar.add(auth_cookie);
 
-    Ok((updated_jar, StatusCode::ACCEPTED))
+    Ok((updated_jar, StatusCode::OK.into_response()))
 }
 
 #[derive(Deserialize)]
