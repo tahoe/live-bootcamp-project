@@ -65,7 +65,7 @@ async fn should_return_400_if_invalid_input() {
         let login_body = serde_json::json!({
             "email": email,
             "password": password,
-            "requires2FA": false
+            // "requires2FA": false
         });
         let response = app.post_login(&login_body).await;
 
@@ -104,7 +104,7 @@ async fn should_return_200_if_valid_credentials_and_2fa_disabled() {
     let login_body = serde_json::json!({
         "email": random_email,
         "password": "password123",
-        "requires2FA": false
+        // "requires2FA": false
     });
 
     let response = app.post_login(&login_body).await;

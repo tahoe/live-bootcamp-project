@@ -54,8 +54,8 @@ pub async fn login(
 pub struct LoginRequest {
     pub email: String,
     pub password: String,
-    #[serde(rename = "requires2FA")]
-    pub requires_2fa: bool,
+    // #[serde(rename = "requires2FA")]
+    // pub requires_2fa: bool,
 }
 
 #[derive(Debug, Deserialize, PartialEq)]
