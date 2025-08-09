@@ -107,6 +107,7 @@ impl TestApp {
     {
         self.http_client
             .post(format!("{}/verify_token", &self.address))
+            .json(body)
             .send()
             .await
             .expect("Failed to execute request.")
