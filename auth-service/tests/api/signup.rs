@@ -31,7 +31,7 @@ async fn should_return_201_if_valid_input() {
     let test_cases = [serde_json::json!({
         "email": random_email,
         "password": "pass1234",
-        "requires2FA": true
+        "requires2FA": false
     })];
 
     for test_case in test_cases.iter() {
