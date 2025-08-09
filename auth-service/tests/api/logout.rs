@@ -22,6 +22,7 @@ async fn should_return_200_if_valid_jwt_cookie() {
     let login_body = serde_json::json!({
         "email": random_email,
         "password": "password123",
+        "requires2FA": false
     });
 
     let response = app.post_login(&login_body).await;
@@ -83,7 +84,7 @@ async fn should_return_401_if_invalid_token() {
             .await
             .expect("Could not deserialize response body to ErrorResponse")
             .error,
-        "Invalid auth token".to_owned()
+        "Tolken invalid!".to_owned()
     );
 }
 
