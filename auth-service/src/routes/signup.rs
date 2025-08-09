@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     app_state::AppState,
-    domain::{AuthAPIError, Email, Password, User, UserStore},
+    domain::{AuthAPIError, Email, Password, User},
 };
 
 pub async fn signup(

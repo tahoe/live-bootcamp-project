@@ -1,6 +1,14 @@
 #![allow(unused)]
 use auth_service::domain::{Email, Password, User, UserStore};
-use auth_service::{app_state::AppState, services::HashmapUserStore, Application};
+use auth_service::{
+    app_state::{AppState, BannedTokenStoreType},
+    services::{
+        hashmap_user_store::HashmapUserStore, hashset_banned_token_store::HashsetBannedTokenStore,
+    },
+    utils::constants::test,
+    Application,
+};
+use reqwest::cookie::Jar;
 use reqwest::Client;
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -9,26 +17,18 @@ use uuid::Uuid;
 
 pub struct TestApp {
     pub address: String,
+    pub cookie_jar: Arc<Jar>,
     pub http_client: reqwest::Client,
+    pub banned_token_store: BannedTokenStoreType,
 }
 
 impl TestApp {
     pub async fn new() -> Self {
-        // Create a pre-defined test user for auth/login tests
-        let mut mapper = HashmapUserStore::default();
-        let user = User {
-            email: Email::parse("test@example.com".to_owned()).unwrap(),
-            password: Password::parse("Secure Password".to_owned()).unwrap(),
-            requires_2fa: false,
-        };
-
-        // Add the user to the hashmap/user store before launching test app
-        let _result = mapper.add_user(user.clone()).await;
-
         // Add the hashmap to the app
-        let mut user_store = Arc::new(RwLock::new(mapper));
-        let app_state = AppState::new(user_store);
-        let app = Application::build(app_state, "0.0.0.0:0")
+        let mut user_store = Arc::new(RwLock::new(HashmapUserStore::default()));
+        let banned_token_store = Arc::new(RwLock::new(HashsetBannedTokenStore::default()));
+        let app_state = AppState::new(user_store, banned_token_store.clone());
+        let app = Application::build(app_state, test::APP_ADDRESS)
             .await
             .expect("Failed to build app");
 
@@ -38,11 +38,18 @@ impl TestApp {
         #[allow(clippy::let_underscore_future)]
         let _ = tokio::spawn(app.run());
 
-        let http_client = Client::new();
+        let cookie_jar = Arc::new(Jar::default());
+
+        let http_client = reqwest::Client::builder()
+            .cookie_provider(cookie_jar.clone())
+            .build()
+            .unwrap();
 
         Self {
             address,
+            cookie_jar,
             http_client,
+            banned_token_store,
         }
     }
 
@@ -94,7 +101,10 @@ impl TestApp {
             .expect("Failed to execute request.")
     }
 
-    pub async fn post_verify_token(&self) -> reqwest::Response {
+    pub async fn post_verify_token<Body>(&self, body: &Body) -> reqwest::Response
+    where
+        Body: serde::Serialize,
+    {
         self.http_client
             .post(format!("{}/verify_token", &self.address))
             .send()

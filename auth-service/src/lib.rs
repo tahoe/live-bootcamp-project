@@ -1,6 +1,6 @@
 use app_state::AppState;
 use axum::{
-    http::StatusCode,
+    http::{Method, StatusCode},
     response::{IntoResponse, Response},
     routing::post,
     serve::Serve,
@@ -9,7 +9,7 @@ use axum::{
 use domain::AuthAPIError;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
-use tower_http::services::ServeDir;
+use tower_http::{cors::CorsLayer, services::ServeDir};
 
 pub mod app_state;
 pub mod domain;
@@ -30,6 +30,16 @@ impl Application {
         // Move the Router definition from 'main.rs' to here.
         // Also, remove the `hello` route,
         // We don't need it at this point!
+        let allowed_origins = [
+            "http://localhost:8000".parse()?,
+            "http://auth-api.durling.net:8000".parse()?,
+        ];
+
+        let cors = CorsLayer::new()
+            .allow_methods([Method::GET, Method::POST])
+            .allow_credentials(true)
+            .allow_origin(allowed_origins);
+
         let router = Router::new()
             .nest_service("/", ServeDir::new("assets"))
             .route("/signup", post(routes::signup))
@@ -37,7 +47,8 @@ impl Application {
             .route("/logout", post(routes::logout))
             .route("/verify_2fa", post(routes::verify_2fa))
             .route("/verify_token", post(routes::verify_token))
-            .with_state(app_state);
+            .with_state(app_state)
+            .layer(cors);
 
         let listner = tokio::net::TcpListener::bind(address).await?;
         let address = listner.local_addr()?.to_string();
@@ -64,6 +75,8 @@ impl IntoResponse for AuthAPIError {
             AuthAPIError::UserAlreadyExists => (StatusCode::CONFLICT, "User already exists"),
             AuthAPIError::InvalidCredentials => (StatusCode::BAD_REQUEST, "Invalid credentials"),
             AuthAPIError::IncorrectCredentials => (StatusCode::UNAUTHORIZED, "Non Shall Pass!"),
+            AuthAPIError::MissingToken => (StatusCode::BAD_REQUEST, "Please provide a tolken!"),
+            AuthAPIError::InvalidToken => (StatusCode::UNAUTHORIZED, "Tolken invalid!"),
             AuthAPIError::UnexpectedError => {
                 (StatusCode::INTERNAL_SERVER_ERROR, "Unexpected error")
             }
