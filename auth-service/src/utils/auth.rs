@@ -100,6 +100,7 @@ pub struct Claims {
 
 #[cfg(test)]
 mod tests {
+
     use super::*;
     use std::sync::Arc;
     use tokio::sync::RwLock;
