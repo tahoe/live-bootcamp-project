@@ -16,10 +16,9 @@ pub fn generate_auth_cookie(email: &Email) -> Result<Cookie<'static>, GenerateTo
 // Create cookie and set the value to the passed-in token string
 fn create_auth_cookie(token: String) -> Cookie<'static> {
     let cookie = Cookie::build((JWT_COOKIE_NAME, token))
-        .domain(JWT_COOKIE_DOMAIN.clone())
+        .domain(JWT_COOKIE_DOMAIN.as_str())
         .path("/") // apple cookie to all URLs on the server
         .http_only(true) // prevent JavaScript from accessing the cookie
-        .same_site(SameSite::Lax) // send cookie with "same-site" requests, and with "cross-site" top-level navigations.
         .build();
     cookie
 }
