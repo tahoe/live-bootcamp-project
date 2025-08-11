@@ -33,6 +33,7 @@ impl Application {
         let allowed_origins = [
             "http://localhost:8000".parse()?,
             "http://auth-api.durling.net".parse()?,
+            "http://auth-app.durling.net".parse()?,
         ];
 
         let cors = CorsLayer::new()
