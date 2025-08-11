@@ -37,4 +37,5 @@ pub mod prod {
 
 pub mod test {
     pub const APP_ADDRESS: &str = "127.0.0.1:0";
+    pub const JWT_COOKIE_DOMAIN: &str = "127.0.0.1";
 }
