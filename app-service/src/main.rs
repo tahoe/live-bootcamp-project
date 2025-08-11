@@ -68,6 +68,7 @@ async fn protected(jar: CookieJar) -> impl IntoResponse {
         Ok(response) => response,
         Err(_) => {
             // return StatusCode::OK.into_response();
+            dbg!("Error: {response:?}");
             return StatusCode::INTERNAL_SERVER_ERROR.into_response();
         }
     };
