@@ -66,9 +66,9 @@ async fn protected(jar: CookieJar) -> impl IntoResponse {
 
     let response = match api_client.post(&url).json(&verify_token_body).send().await {
         Ok(response) => response,
-        Err(_) => {
+        Err(error) => {
             // return StatusCode::OK.into_response();
-            dbg!("Error: {response:?}");
+            dbg!("Error: {:?}", error);
             return StatusCode::INTERNAL_SERVER_ERROR.into_response();
         }
     };
