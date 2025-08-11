@@ -36,7 +36,8 @@ impl Application {
         //     "http://auth-app.durling.net".parse()?,
         // ];
 
-        let cors = CorsLayer::permissive();
+        // trying out very_permissive instead of new function
+        let cors = CorsLayer::very_permissive();
         // let cors = CorsLayer::new()
         //     .allow_methods([Method::GET, Method::POST])
         //     .allow_credentials(true)
