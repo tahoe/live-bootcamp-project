@@ -54,7 +54,11 @@ async fn protected(jar: CookieJar) -> impl IntoResponse {
         }
     };
 
-    let api_client = reqwest::Client::builder().build().unwrap();
+    let api_client = reqwest::Client::builder()
+        .use_rustls_tls()
+        .https_only(true)
+        .build()
+        .unwrap();
 
     let verify_token_body = serde_json::json!({
         "token": &jwt_cookie.value(),
