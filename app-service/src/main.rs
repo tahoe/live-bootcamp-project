@@ -62,7 +62,7 @@ async fn protected(jar: CookieJar) -> impl IntoResponse {
 
     let auth_hostname =
         env::var("AUTH_SERVICE_HOST_NAME").unwrap_or("rust-api.durling.net".to_owned());
-    let url = format!("http://{auth_hostname}/verify-token");
+    let url = format!("http://{auth_hostname}/verify_token");
 
     let response = match api_client.post(&url).json(&verify_token_body).send().await {
         Ok(response) => response,
