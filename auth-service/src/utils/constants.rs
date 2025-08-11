@@ -9,15 +9,24 @@ lazy_static! {
 
 fn set_token() -> String {
     dotenv().ok(); // Load environment variables
-    let secret = std_env::var(env::JWT_SECRET_ENV_VAR).expect("JWT_SECRET must be set.");
+    let secret = std_env::var("JWT_SECRET").expect("JWT_SECRET must be set.");
     if secret.is_empty() {
         panic!("JWT_SECRET must not be empty.");
     }
     secret
 }
 
-pub mod env {
-    pub const JWT_SECRET_ENV_VAR: &str = "JWT_SECRET";
+lazy_static! {
+    pub static ref JWT_COOKIE_DOMAIN: String = set_domain();
+}
+
+fn set_domain() -> String {
+    dotenv().ok(); // Load environment variables
+    let domain = std_env::var("JWT_COOKIE_DOMAIN").expect("JWT_COOKIE_DOMAIN must be set.");
+    if domain.is_empty() {
+        panic!("JWT_COOKIE_DOMAIN must not be empty.");
+    }
+    domain
 }
 
 pub const JWT_COOKIE_NAME: &str = "jwt";

@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{app_state::BannedTokenStoreType, domain::email::Email};
 
-use super::constants::{JWT_COOKIE_NAME, JWT_SECRET};
+use super::constants::{JWT_COOKIE_DOMAIN, JWT_COOKIE_NAME, JWT_SECRET};
 
 // Create cookie with a new JWT auth token
 pub fn generate_auth_cookie(email: &Email) -> Result<Cookie<'static>, GenerateTokenError> {
@@ -16,11 +16,11 @@ pub fn generate_auth_cookie(email: &Email) -> Result<Cookie<'static>, GenerateTo
 // Create cookie and set the value to the passed-in token string
 fn create_auth_cookie(token: String) -> Cookie<'static> {
     let cookie = Cookie::build((JWT_COOKIE_NAME, token))
+        .domain(JWT_COOKIE_DOMAIN.clone())
         .path("/") // apple cookie to all URLs on the server
         .http_only(true) // prevent JavaScript from accessing the cookie
         .same_site(SameSite::Lax) // send cookie with "same-site" requests, and with "cross-site" top-level navigations.
         .build();
-
     cookie
 }
 

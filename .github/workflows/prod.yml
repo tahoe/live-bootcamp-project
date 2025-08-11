@@ -94,6 +94,7 @@ jobs:
           cd ~
           export JWT_SECRET=${{ secrets.JWT_SECRET }}
           export AUTH_SERVICE_IP=${{ vars.DROPLET_IP }}
+          export JWT_COOKIE_DOMAIN=${{ vars.JWT_COOKIE_DOMAIN }}
           docker compose down
           docker compose pull
           docker compose up -d
