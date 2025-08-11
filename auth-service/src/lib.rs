@@ -1,6 +1,6 @@
 use app_state::AppState;
 use axum::{
-    http::{Method, StatusCode},
+    http::StatusCode,
     response::{IntoResponse, Response},
     routing::post,
     serve::Serve,
@@ -30,16 +30,17 @@ impl Application {
         // Move the Router definition from 'main.rs' to here.
         // Also, remove the `hello` route,
         // We don't need it at this point!
-        let allowed_origins = [
-            "http://localhost:8000".parse()?,
-            "http://auth-api.durling.net".parse()?,
-            "http://auth-app.durling.net".parse()?,
-        ];
+        // let allowed_origins = [
+        //     "http://localhost:8000".parse()?,
+        //     "http://auth-api.durling.net".parse()?,
+        //     "http://auth-app.durling.net".parse()?,
+        // ];
 
-        let cors = CorsLayer::new()
-            .allow_methods([Method::GET, Method::POST])
-            .allow_credentials(true)
-            .allow_origin(allowed_origins);
+        let cors = CorsLayer::permissive();
+        // let cors = CorsLayer::new()
+        //     .allow_methods([Method::GET, Method::POST])
+        //     .allow_credentials(true)
+        //     .allow_origin(allowed_origins);
 
         let router = Router::new()
             .nest_service("/", ServeDir::new("assets"))
