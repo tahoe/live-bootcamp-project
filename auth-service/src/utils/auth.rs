@@ -1,4 +1,4 @@
-use axum_extra::extract::cookie::Cookie;
+use axum_extra::extract::cookie::{Cookie, SameSite};
 use chrono::Utc;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Validation};
 use serde::{Deserialize, Serialize};
@@ -19,6 +19,7 @@ fn create_auth_cookie(token: String) -> Cookie<'static> {
         .domain(JWT_COOKIE_DOMAIN.as_str())
         .path("/") // apple cookie to all URLs on the server
         .http_only(true) // prevent JavaScript from accessing the cookie
+        .same_site(SameSite::Lax)
         .build();
     cookie
 }
