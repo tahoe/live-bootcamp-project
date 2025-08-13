@@ -1,6 +1,6 @@
 use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
 use axum_extra::extract::CookieJar;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     app_state::AppState,
@@ -47,10 +47,34 @@ pub async fn login(
 
     let updated_jar = jar.add(auth_cookie);
 
-    Ok((updated_jar, StatusCode::OK.into_response()))
+    match user.requires_2fa {
+        true => handle_2fa(jar).await,
+        false => handle_no_2fa(&user.email, jar).await,
+    }
 }
 
-#[derive(Deserialize)]
+async fn handle_2fa(
+    jar: CookieJar,
+) -> (
+    CookieJar,
+    Result<(StatusCode, Json<LoginResponse>), AuthAPIError>,
+) {
+    // TODO: Return a TwoFactorAuthResponse. The message should be "2FA required".
+    // The login attempt ID should be "123456". We will replace this hard-coded login attempt ID soon!
+    todo!()
+}
+
+async fn handle_no_2fa(
+    email: &Email,
+    jar: CookieJar,
+) -> (
+    CookieJar,
+    Result<(StatusCode, Json<LoginResponse>), AuthAPIError>,
+) {
+    todo!()
+}
+
+#[derive(Debug, Deserialize)]
 pub struct LoginRequest {
     pub email: String,
     pub password: String,
@@ -58,8 +82,18 @@ pub struct LoginRequest {
     // pub requires_2fa: bool,
 }
 
-#[derive(Debug, Deserialize, PartialEq)]
-pub struct LoginResponse {
-    pub email: String,
-    pub password: String,
+#[derive(Debug, Serialize)]
+#[serde(untagged)]
+pub enum LoginResponse {
+    RegularAuth,
+    TwoFactorAuth(TwoFactorAuthResponse),
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TwoFactorAuthResponse {
+    pub message: String,
+    #[serde(rename = )]
+    pub login_attempt_id: String,
+}
+
+// EOF
