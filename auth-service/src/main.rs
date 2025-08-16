@@ -1,6 +1,5 @@
 use auth_service::{
     app_state::AppState,
-    domain::email_client,
     services::{
         hashmap_two_fa_code_store::HashmapTwoFACodeStore, hashmap_user_store::HashmapUserStore,
         hashset_banned_token_store::HashsetBannedTokenStore, moc_email_client::MockEmailClient,
