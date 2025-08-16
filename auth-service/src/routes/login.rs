@@ -35,18 +35,32 @@ pub async fn login(
     };
 
     match user.requires_2fa {
-        true => handle_2fa(jar).await,
+        true => handle_2fa(jar, &user.email, &state).await,
         false => handle_no_2fa(&user.email, jar).await,
     }
 }
 
 async fn handle_2fa(
     jar: CookieJar,
+    email: &Email,
+    state: &AppState,
 ) -> (
     CookieJar,
     Result<(StatusCode, Json<LoginResponse>), AuthAPIError>,
 ) {
     let login_attempt_id = LoginAttemptId::default();
+    let two_fa_code = TwoFACode::default();
+
+    if state
+        .two_fa_code_store
+        .write()
+        .await
+        .add_code(email.clone(), login_attempt_id.clone(), two_fa_code.clone())
+        .await
+        .is_err()
+    {
+        return (jar, Err(AuthAPIError::UnexpectedError));
+    }
 
     let response = Json(LoginResponse::TwoFactorAuth(TwoFactorAuthResponse {
         message: "2FA required".to_owned(),
