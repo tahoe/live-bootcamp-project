@@ -147,7 +147,7 @@ paths:
                   error:
                     type: string
 
-  /verify_2fa:
+  /verify-2fa:
     post:
       summary: Verify 2FA token
       requestBody:
@@ -248,7 +248,7 @@ paths:
                   error:
                     type: string
 
-  /verify_token:
+  /verify-token:
     post:
       summary: Verify JWT
       description: Verifies if a JWT is valid

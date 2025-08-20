@@ -106,7 +106,7 @@ impl TestApp {
 
     pub async fn post_verify_2fa(&self) -> reqwest::Response {
         self.http_client
-            .post(format!("{}/verify_2fa", &self.address))
+            .post(format!("{}/verify-2fa", &self.address))
             .send()
             .await
             .expect("Failed to execute request.")
@@ -117,7 +117,7 @@ impl TestApp {
         Body: serde::Serialize,
     {
         self.http_client
-            .post(format!("{}/verify_token", &self.address))
+            .post(format!("{}/verify-token", &self.address))
             .json(body)
             .send()
             .await
