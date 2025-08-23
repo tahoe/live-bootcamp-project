@@ -5,7 +5,7 @@ use auth_service::{
         data_store::{PostgresUserStore, RedisBannedTokenStore, RedisTwoFACodeStore},
         moc_email_client::MockEmailClient,
     },
-    utils::constants::{test, DATABASE_URL, REDIS_HOST_NAME},
+    utils::constants::{test, DATABASE_URL, DEFAULT_REDIS_HOSTNAME, REDIS_HOST_NAME},
     Application,
 };
 use reqwest::cookie::Jar;
@@ -236,7 +236,7 @@ async fn configure_database(db_conn_string: &str, db_name: &str) {
 }
 
 fn configure_redis() -> redis::Connection {
-    let redis_hostname = REDIS_HOST_NAME.to_owned();
+    let redis_hostname = DEFAULT_REDIS_HOSTNAME.to_owned();
 
     get_redis_client(redis_hostname)
         .expect("Failed to get Redis client")
