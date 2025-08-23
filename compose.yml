@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.8"
 services:
   app-service:
     image: djdtahoe/app-service # specify name of image on Docker Hub
@@ -22,8 +22,7 @@ services:
       - "0.0.0.0:3000:3000" # expose port 3000 so that applications outside the container jkcan connect to it 
     depends_on:
       - db
-
-   db:
+  db:
     image: postgres:15.2-alpine
     restart: always
     environment:
