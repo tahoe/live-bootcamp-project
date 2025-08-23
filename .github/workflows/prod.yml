@@ -57,7 +57,7 @@ jobs:
     - name: Build and test auth-service code
       working-directory: ./auth-service
       run: |
-        export SQLX_OFFLINE: true
+        export SQLX_OFFLINE=true
         export JWT_SECRET=secret
         export JWT_COOKIE_DOMAIN="127.0.0.1"
         export DATABASE_URL=postgres://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432
@@ -116,7 +116,7 @@ jobs:
           export AUTH_SERVICE_IP=${{ vars.DROPLET_IP }}
           export JWT_COOKIE_DOMAIN=${{ vars.JWT_COOKIE_DOMAIN }}
           export POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          SQLX_OFFLINE: true
+          export SQLX_OFFLINE=true
           docker compose down
           docker compose pull
           docker compose up -d
