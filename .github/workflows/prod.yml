@@ -7,9 +7,30 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  SQLX_OFFLINE: true
+
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        # Docker Hub image
+        image: postgres:15.2-alpine
+        # Environment variables scoped only for the `postgres` element
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: postgres
+        # Opens tcp port 5432 on the host and service container
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:7.0-alpine
+        ports:
+          - 6379:6379
 
     steps:
       # Checkout code from the repository
@@ -42,6 +63,7 @@ jobs:
       run: |
         export JWT_SECRET=secret
         export JWT_COOKIE_DOMAIN="127.0.0.1"
+        export DATABASE_URL=postgres://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432
         cargo build --verbose
         cargo test --verbose
 
@@ -96,6 +118,7 @@ jobs:
           export JWT_SECRET=${{ secrets.JWT_SECRET }}
           export AUTH_SERVICE_IP=${{ vars.DROPLET_IP }}
           export JWT_COOKIE_DOMAIN=${{ vars.JWT_COOKIE_DOMAIN }}
+          export POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           docker compose down
           docker compose pull
           docker compose up -d
