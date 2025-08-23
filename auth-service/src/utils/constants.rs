@@ -7,6 +7,7 @@ lazy_static! {
     pub static ref JWT_SECRET: String = set_token();
     pub static ref JWT_COOKIE_DOMAIN: String = set_domain();
     pub static ref DATABASE_URL: String = set_db_url();
+    pub static ref REDIS_HOST_NAME: String = set_redis_host();
 }
 
 fn set_token() -> String {
@@ -36,7 +37,17 @@ fn set_db_url() -> String {
     db_url
 }
 
+fn set_redis_host() -> String {
+    dotenv().ok();
+    let redis_host = std_env::var("REDIS_HOST_NAME").expect("REDIS_HOST_NAME must be set.");
+    if redis_host.is_empty() {
+        panic!("REDIS_HOST_NAME must not be empty.");
+    }
+    redis_host
+}
+
 pub const JWT_COOKIE_NAME: &str = "jwt";
+pub const DEFAULT_REDIS_HOSTNAME: &str = "127.0.0.1";
 
 pub mod prod {
     pub const APP_ADDRESS: &str = "0.0.0.0:3000";

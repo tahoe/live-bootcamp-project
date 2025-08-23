@@ -3,8 +3,9 @@ use auth_service::domain::Email;
 use auth_service::routes::TwoFactorAuthResponse;
 use auth_service::utils::constants::JWT_COOKIE_NAME;
 use auth_service::ErrorResponse;
+use test_helpers::api_test;
 
-#[tokio::test]
+#[api_test]
 async fn should_return_422_if_malformed_credentials() {
     let app = TestApp::new().await;
 
@@ -19,7 +20,7 @@ async fn should_return_422_if_malformed_credentials() {
     // }
 }
 
-#[tokio::test]
+#[api_test]
 async fn should_return_401_if_incorrect_credentials() {
     let app = TestApp::new().await;
 
@@ -39,7 +40,7 @@ async fn should_return_401_if_incorrect_credentials() {
     }
 }
 
-#[tokio::test]
+#[api_test]
 async fn should_return_400_if_invalid_input() {
     let app = TestApp::new().await;
 
@@ -88,7 +89,7 @@ async fn should_return_400_if_invalid_input() {
     }
 }
 
-#[tokio::test]
+#[api_test]
 async fn should_return_200_if_valid_credentials_and_2fa_disabled() {
     let app = TestApp::new().await;
     let random_email = get_random_email();
@@ -123,7 +124,7 @@ async fn should_return_200_if_valid_credentials_and_2fa_disabled() {
 
 // Sprint 4
 
-#[tokio::test]
+#[api_test]
 async fn should_return_206_if_valid_credentials_and_2fa_enabled() {
     let app = TestApp::new().await;
     let random_email = get_random_email();

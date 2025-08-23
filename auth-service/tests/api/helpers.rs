@@ -1,11 +1,11 @@
 use auth_service::{
     app_state::{AppState, BannedTokenStoreType, TwoFACodeStoreType},
-    get_postgres_pool,
+    get_postgres_pool, get_redis_client,
     services::{
-        data_store::{HashmapTwoFACodeStore, HashsetBannedTokenStore, PostgresUserStore},
+        data_store::{HashmapTwoFACodeStore, PostgresUserStore, RedisBannedTokenStore},
         moc_email_client::MockEmailClient,
     },
-    utils::constants::{test, DATABASE_URL},
+    utils::constants::{test, DATABASE_URL, REDIS_HOST_NAME},
     Application,
 };
 use reqwest::cookie::Jar;
@@ -21,9 +21,9 @@ use uuid::Uuid;
 pub struct TestApp {
     pub address: String,
     pub cookie_jar: Arc<Jar>,
-    pub http_client: reqwest::Client,
     pub banned_token_store: BannedTokenStoreType,
     pub two_fa_code_store: TwoFACodeStoreType,
+    pub http_client: reqwest::Client,
     pub db_name: String,
     pub clean_up_called: bool,
 }
@@ -32,9 +32,14 @@ impl TestApp {
     pub async fn new() -> Self {
         // Add the hashmap to the app
         let db_name = Uuid::new_v4().to_string();
+
         let pg_pool = configure_postgresql(&db_name).await;
+        let redis_connection = Arc::new(RwLock::new(configure_redis()));
+
         let user_store = Arc::new(RwLock::new(PostgresUserStore::new(pg_pool)));
-        let banned_token_store = Arc::new(RwLock::new(HashsetBannedTokenStore::default()));
+        let banned_token_store = Arc::new(RwLock::new(RedisBannedTokenStore::new(
+            redis_connection.clone(),
+        )));
         let two_fa_code_store = Arc::new(RwLock::new(HashmapTwoFACodeStore::default()));
         let email_client = Arc::new(MockEmailClient);
 
@@ -228,4 +233,13 @@ async fn configure_database(db_conn_string: &str, db_name: &str) {
         .run(&connection)
         .await
         .expect("Failed to migrate the database");
+}
+
+fn configure_redis() -> redis::Connection {
+    let redis_hostname = REDIS_HOST_NAME.to_owned();
+
+    get_redis_client(redis_hostname)
+        .expect("Failed to get Redis client")
+        .get_connection()
+        .expect("Failed to get Redis connection")
 }

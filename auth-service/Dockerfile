@@ -17,6 +17,7 @@ RUN cargo chef cook --release --recipe-path recipe.json
 # Build application
 COPY . .
 ENV SQLX_OFFLINE true
+ENV REDIS_HOST_NAME=redis
 RUN cargo build --release --bin auth-service
 
 # We do not need the Rust toolchain to run the binary!
