@@ -59,8 +59,8 @@ jobs:
       run: |
         export SQLX_OFFLINE=true
         export JWT_SECRET=secret
-        export JWT_COOKIE_DOMAIN="127.0.0.1"
-        export DATABASE_URL="postgres://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432"
+        export JWT_COOKIE_DOMAIN=127.0.0.1
+        export DATABASE_URL=postgres://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432
         cargo build --verbose
       # cargo test --verbose
 
