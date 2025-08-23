@@ -1,10 +1,7 @@
 use auth_service::{
     app_state::AppState,
     get_postgres_pool,
-    services::{
-        hashmap_two_fa_code_store::HashmapTwoFACodeStore, hashmap_user_store::HashmapUserStore,
-        hashset_banned_token_store::HashsetBannedTokenStore, moc_email_client::MockEmailClient,
-    },
+    services::{data_store::PostgresUserStore, mock_email_client::MockEmailClient},
     utils::constants::{prod, DATABASE_URL},
     Application,
 };
