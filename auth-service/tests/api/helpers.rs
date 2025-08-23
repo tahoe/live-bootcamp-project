@@ -24,8 +24,8 @@ pub struct TestApp {
     pub http_client: reqwest::Client,
     pub banned_token_store: BannedTokenStoreType,
     pub two_fa_code_store: TwoFACodeStoreType,
-    pub clean_up_called: bool,
     pub db_name: String,
+    pub clean_up_called: bool,
 }
 
 impl TestApp {
@@ -44,18 +44,17 @@ impl TestApp {
             two_fa_code_store.clone(),
             email_client,
         );
+
         let app = Application::build(app_state, test::APP_ADDRESS)
             .await
             .expect("Failed to build app");
 
-        // for return only, hsa to be before spawning the app and cloned...
         let address = format!("http://{}", app.address.clone());
 
         #[allow(clippy::let_underscore_future)]
         let _ = tokio::spawn(app.run());
 
         let cookie_jar = Arc::new(Jar::default());
-
         let http_client = reqwest::Client::builder()
             .cookie_provider(cookie_jar.clone())
             .build()
@@ -64,9 +63,9 @@ impl TestApp {
         Self {
             address,
             cookie_jar,
-            http_client,
             banned_token_store,
             two_fa_code_store,
+            http_client,
             db_name,
             clean_up_called: false,
         }

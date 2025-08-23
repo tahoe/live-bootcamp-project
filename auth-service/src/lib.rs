@@ -8,8 +8,7 @@ use axum::{
 };
 use domain::AuthAPIError;
 use serde::{Deserialize, Serialize};
-use sqlx::postgres::PgPoolOptions;
-use sqlx::PgPool;
+use sqlx::{postgres::PgPoolOptions, PgPool};
 use std::error::Error;
 use tower_http::{cors::CorsLayer, services::ServeDir};
 
@@ -22,8 +21,6 @@ pub mod utils;
 // This struct encapsulates our application-related logic.
 pub struct Application {
     server: Serve<Router, Router>,
-    // address is exposed as a public field
-    // so we have access to it in tests.
     pub address: String,
 }
 
