@@ -5,7 +5,7 @@ use auth_service::{
         data_store::{PostgresUserStore, RedisBannedTokenStore, RedisTwoFACodeStore},
         moc_email_client::MockEmailClient,
     },
-    utils::constants::{test, DATABASE_URL, DEFAULT_REDIS_HOSTNAME, REDIS_HOST_NAME},
+    utils::constants::{test, DATABASE_URL, DEFAULT_REDIS_HOSTNAME},
     Application,
 };
 use reqwest::cookie::Jar;
