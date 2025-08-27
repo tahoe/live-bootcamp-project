@@ -40,8 +40,8 @@ jobs:
         path: |
           app-service/.cargo
           app-service/target/
-          auth-service/.cargo
-          auth-service/target/
+        # auth-service/.cargo
+        # auth-service/target/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
         restore-keys: ${{ runner.os }}-cargo-
 
