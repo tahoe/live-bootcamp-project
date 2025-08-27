@@ -42,6 +42,7 @@ jobs:
           app-service/target/
           auth-service/.cargo
           auth-service/target/
+          auth-service/.sqlx
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
         restore-keys: ${{ runner.os }}-cargo-
 
