@@ -116,7 +116,6 @@ jobs:
           export AUTH_SERVICE_IP=${{ vars.DROPLET_IP }}
           export JWT_COOKIE_DOMAIN=${{ vars.JWT_COOKIE_DOMAIN }}
           export POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-        #export SQLX_OFFLINE=true
           docker compose down
           docker compose pull
           docker compose up -d
