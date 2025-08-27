@@ -30,10 +30,7 @@ impl UserStore for PostgresUserStore {
             .map_err(|_| UserStoreError::UnexpectedError)?;
 
         sqlx::query!(
-            r#"
-            INSERT INTO users (email, password_hash, requires_2fa)
-            VALUES ($1, $2, $3)
-            "#,
+            r#"INSERT INTO users (email, password_hash, requires_2fa) VALUES ($1, $2, $3)"#,
             user.email.as_ref(),
             &password_hash,
             user.requires_2fa
@@ -47,11 +44,7 @@ impl UserStore for PostgresUserStore {
 
     async fn get_user(&self, email: &Email) -> Result<User, UserStoreError> {
         sqlx::query!(
-            r#"
-            SELECT email, password_hash, requires_2fa
-            FROM users
-            WHERE email = $1
-            "#,
+            r#"SELECT email, password_hash, requires_2fa FROM users WHERE email = $1"#,
             email.as_ref()
         )
         .fetch_optional(&self.pool)

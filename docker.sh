@@ -22,5 +22,8 @@ while IFS= read -r line; do
 done < <(grep -v '^#' "$ENV_FILE")
 
 # Run docker-compose commands with exported variables
+docker-compose up -d redis
+docker-compose up -d db
 docker-compose build
-docker-compose up
+docker-compose up -d auth-service
+docker-compose up -d app-service
