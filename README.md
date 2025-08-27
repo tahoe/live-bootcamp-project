@@ -32,4 +32,4 @@ docker compose build
 docker compose up
 ```
 
-visit http://localhost:8000 and http://localhost:3000
+[visit your site at](http://localhost:8000) [and](http://localhost:3000)
