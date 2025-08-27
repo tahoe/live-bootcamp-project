@@ -5,9 +5,7 @@ on:
   push:
     branches:
       - main
-
-env:
-  SQLX_OFFLINE: true
+  workflow_dispatch:
 
 jobs:
   build:
@@ -48,25 +46,23 @@ jobs:
         restore-keys: ${{ runner.os }}-cargo-
 
     - name: Install Rust
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
+      run: rustup update stable && rustup default stable
 
-    # - name: Build and test app-service code
-    #   working-directory: ./app-service
-    #   run: |
-    #     cargo build --verbose
-    #     cargo test --verbose
+    - name: Build and test app-service code
+      working-directory: ./app-service
+      run: |
+        cargo build --verbose
+        cargo test --verbose
 
-    # # export JWT_COOKIE_DOMAIN=127.0.0.1
-    # # cargo test --verbose
-    # - name: Build and test auth-service code
-    #   working-directory: ./auth-service
-    #   run: |
-    #     export JWT_SECRET=secret
-    #     export DATABASE_URL=postgres://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432
-    #     cargo build --verbose
+    - name: Build and test auth-service code
+      working-directory: ./auth-service
+      run: |
+        export SQLX_OFFLINE=true
+        export JWT_SECRET=secret
+        export JWT_COOKIE_DOMAIN=127.0.0.1
+        export DATABASE_URL=postgres://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432
+        cargo build --verbose
+      # cargo test --verbose
 
       # Set up Docker Buildx for multi-platform builds
     - name: Set up Docker Buildx
