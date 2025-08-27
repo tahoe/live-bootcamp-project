@@ -40,8 +40,8 @@ jobs:
         path: |
           app-service/.cargo
           app-service/target/
-        # auth-service/.cargo
-        # auth-service/target/
+          auth-service/.cargo
+          auth-service/target/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
         restore-keys: ${{ runner.os }}-cargo-
 
@@ -54,14 +54,14 @@ jobs:
         cargo build --verbose
         cargo test --verbose
 
-    # - name: Build and test auth-service code
-    #   working-directory: ./auth-service
-    #   run: |
-    #     export JWT_SECRET=secret
-    #     export JWT_COOKIE_DOMAIN=127.0.0.1
-    #     export DATABASE_URL=postgres://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432
-    #     cargo build --verbose
-    #   # cargo test --verbose
+    - name: Build and test auth-service code
+      working-directory: ./auth-service
+      run: |
+        export JWT_SECRET=secret
+        export JWT_COOKIE_DOMAIN=127.0.0.1
+        export DATABASE_URL=postgres://postgres:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432
+        cargo build --verbose
+      # cargo test --verbose
 
       # Set up Docker Buildx for multi-platform builds
     - name: Set up Docker Buildx
