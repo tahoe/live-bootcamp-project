@@ -31,7 +31,7 @@ impl UserStore for PostgresUserStore {
 
         sqlx::query!(
             r#"
-            INSERT INTO users ( email, password_hash, requires_2fa)
+            INSERT INTO users (email, password_hash, requires_2fa)
             VALUES ($1, $2, $3)
             "#,
             user.email.as_ref(),
