@@ -116,7 +116,7 @@ jobs:
           export JWT_SECRET=${{ secrets.JWT_SECRET }}
           export AUTH_SERVICE_IP=${{ vars.DROPLET_IP }}
           export JWT_COOKIE_DOMAIN=${{ vars.JWT_COOKIE_DOMAIN }}
-          export POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           docker compose down
           docker compose pull
           docker compose up -d
