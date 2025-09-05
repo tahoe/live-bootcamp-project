@@ -1,6 +1,7 @@
 use validator::validate_email;
 #[derive(Debug, Clone, PartialEq, Hash, Eq)]
 pub struct Email(String);
+use color_eyre::eyre::Result;
 
 impl Email {
     pub fn parse(s: String) -> Result<Email, String> {
