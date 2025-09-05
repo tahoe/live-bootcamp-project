@@ -31,10 +31,12 @@ fn set_db_url() -> Secret<String> {
 }
 
 fn set_postmark_auth_token() -> Secret<String> {
-    dotenv().ok();
-    Secret::new(
-        std_env::var("POSTMARK_AUTH_TOKEN_ENV_VAR").expect("POSTMARK_AUTH_TOKEN must be set."),
-    )
+    dotenv().ok(); // Load environment variables
+    let auth_token = std_env::var("POSTMARK_AUTH_TOKEN").expect("POSTMARK_AUTH_TOKEN must be set.");
+    if auth_token.is_empty() {
+        panic!("POSTMARK_AUTH_TOKEN must not be empty.");
+    }
+    Secret::new(auth_token)
 }
 
 fn set_domain() -> String {
