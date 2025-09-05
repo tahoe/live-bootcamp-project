@@ -105,6 +105,7 @@ jobs:
 
     - name: Copy compose.yml to droplet
       run: sshpass -v -p '${{ secrets.DROPLET_PASSWORD }}' scp -o StrictHostKeyChecking=no compose.yml deploy@${{ vars.DROPLET_IP }}:~
+
     - name: Deploy
       uses: appleboy/ssh-action@master
       with:
@@ -117,6 +118,7 @@ jobs:
           export AUTH_SERVICE_IP=${{ vars.DROPLET_IP }}
           export JWT_COOKIE_DOMAIN=${{ vars.JWT_COOKIE_DOMAIN }}
           export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          export POSTMARK_AUTH_TOKEN=${{ secrets.POSTMARK_AUTH_TOKEN }}
           docker compose down
           docker compose pull
           docker compose up -d

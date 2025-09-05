@@ -1,22 +1,40 @@
 use dotenvy::dotenv;
 use lazy_static::lazy_static;
+use secrecy::Secret;
 use std::env as std_env;
 
 // Define a lazily evaluated static. lazy_static is needed because std_env::var is not a const function.
 lazy_static! {
-    pub static ref JWT_SECRET: String = set_token();
-    pub static ref JWT_COOKIE_DOMAIN: String = set_domain();
-    pub static ref DATABASE_URL: String = set_db_url();
+    pub static ref JWT_SECRET: Secret<String> = set_token();
+    pub static ref DATABASE_URL: Secret<String> = set_db_url();
+    pub static ref POSTMARK_AUTH_TOKEN: Secret<String> = set_postmark_auth_token();
     pub static ref REDIS_HOST_NAME: String = set_redis_host();
+    pub static ref JWT_COOKIE_DOMAIN: String = set_domain();
 }
 
-fn set_token() -> String {
+fn set_token() -> Secret<String> {
     dotenv().ok(); // Load environment variables
     let secret = std_env::var("JWT_SECRET").expect("JWT_SECRET must be set.");
     if secret.is_empty() {
         panic!("JWT_SECRET must not be empty.");
     }
-    secret
+    Secret::new(secret)
+}
+
+fn set_db_url() -> Secret<String> {
+    dotenv().ok(); // Load environment variables
+    let db_url = std_env::var("DATABASE_URL").expect("DATABASE_URL must be set.");
+    if db_url.is_empty() {
+        panic!("DATABASE_URL must not be empty.");
+    }
+    Secret::new(db_url)
+}
+
+fn set_postmark_auth_token() -> Secret<String> {
+    dotenv().ok();
+    Secret::new(
+        std_env::var("POSTMARK_AUTH_TOKEN_ENV_VAR").expect("POSTMARK_AUTH_TOKEN must be set."),
+    )
 }
 
 fn set_domain() -> String {
@@ -26,15 +44,6 @@ fn set_domain() -> String {
         panic!("JWT_COOKIE_DOMAIN must not be empty.");
     }
     domain
-}
-
-fn set_db_url() -> String {
-    dotenv().ok(); // Load environment variables
-    let db_url = std_env::var("DATABASE_URL").expect("DATABASE_URL must be set.");
-    if db_url.is_empty() {
-        panic!("DATABASE_URL must not be empty.");
-    }
-    db_url
 }
 
 fn set_redis_host() -> String {
@@ -51,9 +60,23 @@ pub const DEFAULT_REDIS_HOSTNAME: &str = "127.0.0.1";
 
 pub mod prod {
     pub const APP_ADDRESS: &str = "0.0.0.0:3000";
+
+    pub mod email_client {
+        use std::time::Duration;
+
+        pub const BASE_URL: &str = "https://api.postmarkapp.com/email";
+        pub const SENDER: &str = "djdtahoe@gmail.com";
+        pub const TIMEOUT: Duration = std::time::Duration::from_millis(10);
+    }
 }
 
 pub mod test {
     pub const APP_ADDRESS: &str = "127.0.0.1:0";
     pub const JWT_COOKIE_DOMAIN: &str = "127.0.0.1";
+
+    pub mod email_client {
+        use std::time::Duration;
+        pub const SENDER: &str = "test@email.com";
+        pub const TIMEOUT: Duration = std::time::Duration::from_millis(200);
+    }
 }

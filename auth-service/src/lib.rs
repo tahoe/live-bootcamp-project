@@ -14,6 +14,7 @@ use std::error::Error;
 use tower_http::{cors::CorsLayer, services::ServeDir, trace::TraceLayer};
 
 use crate::utils::tracing::{make_span_with_request_id, on_request, on_response};
+use secrecy::{ExposeSecret, Secret};
 
 pub mod app_state;
 pub mod domain;
@@ -114,9 +115,12 @@ fn log_error_chain(e: &(dyn Error + 'static)) {
     tracing::error!("{}", report);
 }
 
-pub async fn get_postgres_pool(url: &str) -> Result<PgPool, sqlx::Error> {
+pub async fn get_postgres_pool(url: &Secret<String>) -> Result<PgPool, sqlx::Error> {
     // Create a new PostgreSQL connection pool
-    PgPoolOptions::new().max_connections(5).connect(url).await
+    PgPoolOptions::new()
+        .max_connections(5)
+        .connect(url.expose_secret())
+        .await
 }
 
 pub fn get_redis_client(redis_hostname: String) -> RedisResult<Client> {

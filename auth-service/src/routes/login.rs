@@ -1,5 +1,6 @@
 use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
 use axum_extra::extract::CookieJar;
+use secrecy::{ExposeSecret, Secret};
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -8,7 +9,7 @@ use crate::{
     utils::auth::generate_auth_cookie,
 };
 
-#[tracing::instrument(name = "Login", skip_all)] // New!
+#[tracing::instrument(name = "Login", skip_all)]
 pub async fn login(
     State(state): State<AppState>,
     jar: CookieJar,
@@ -36,16 +37,16 @@ pub async fn login(
     };
 
     match user.requires_2fa {
-        true => handle_2fa(jar, &user.email, &state).await,
+        true => handle_2fa(&user.email, &state, jar).await,
         false => handle_no_2fa(&user.email, jar).await,
     }
 }
 
-#[tracing::instrument(name = "Login", skip_all)] // New!
+#[tracing::instrument(name = "Handle 2fa flow", skip_all)]
 async fn handle_2fa(
-    jar: CookieJar,
     email: &Email,
     state: &AppState,
+    jar: CookieJar,
 ) -> (
     CookieJar,
     Result<(StatusCode, Json<LoginResponse>), AuthAPIError>,
@@ -65,7 +66,7 @@ async fn handle_2fa(
 
     if let Err(e) = state
         .email_client
-        .send_email(email, "2FA Code", two_fa_code.as_ref())
+        .send_email(email, "2FA Code", two_fa_code.as_ref().expose_secret())
         .await
     {
         return (jar, Err(AuthAPIError::UnexpectedError(e)));
@@ -73,7 +74,7 @@ async fn handle_2fa(
 
     let response = Json(LoginResponse::TwoFactorAuth(TwoFactorAuthResponse {
         message: "2FA required".to_owned(),
-        login_attempt_id: login_attempt_id.as_ref().to_owned(),
+        login_attempt_id: login_attempt_id.as_ref().expose_secret().to_owned(),
     }));
 
     (jar, Ok((StatusCode::PARTIAL_CONTENT, response)))
@@ -100,10 +101,10 @@ async fn handle_no_2fa(
     )
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 pub struct LoginRequest {
-    pub email: String,
-    pub password: String,
+    email: Secret<String>,
+    password: Secret<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -119,5 +120,3 @@ pub struct TwoFactorAuthResponse {
     #[serde(rename = "loginAttemptId")]
     pub login_attempt_id: String,
 }
-
-// EOF
