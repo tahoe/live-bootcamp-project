@@ -14,7 +14,7 @@ lazy_static! {
 
 fn set_token() -> Secret<String> {
     dotenv().ok(); // Load environment variables
-    let secret = std_env::var("JWT_SECRET").expect("JWT_SECRET must be set.");
+    let secret = std_env::var(env::JWT_SECRET_ENV_VAR).expect("JWT_SECRET must be set.");
     if secret.is_empty() {
         panic!("JWT_SECRET must not be empty.");
     }
@@ -23,7 +23,7 @@ fn set_token() -> Secret<String> {
 
 fn set_db_url() -> Secret<String> {
     dotenv().ok(); // Load environment variables
-    let db_url = std_env::var("DATABASE_URL").expect("DATABASE_URL must be set.");
+    let db_url = std_env::var(env::DATABASE_URL_ENV_VAR).expect("DATABASE_URL must be set.");
     if db_url.is_empty() {
         panic!("DATABASE_URL must not be empty.");
     }
@@ -32,7 +32,8 @@ fn set_db_url() -> Secret<String> {
 
 fn set_postmark_auth_token() -> Secret<String> {
     dotenv().ok(); // Load environment variables
-    let auth_token = std_env::var("POSTMARK_AUTH_TOKEN").expect("POSTMARK_AUTH_TOKEN must be set.");
+    let auth_token =
+        std_env::var(env::POSTMARK_AUTH_TOKEN_ENV_VAR).expect("POSTMARK_AUTH_TOKEN must be set.");
     if auth_token.is_empty() {
         panic!("POSTMARK_AUTH_TOKEN must not be empty.");
     }
@@ -41,7 +42,8 @@ fn set_postmark_auth_token() -> Secret<String> {
 
 fn set_domain() -> String {
     dotenv().ok(); // Load environment variables
-    let domain = std_env::var("JWT_COOKIE_DOMAIN").expect("JWT_COOKIE_DOMAIN must be set.");
+    let domain =
+        std_env::var(env::JWT_COOKIE_DOMAIN_ENV_VAR).expect("JWT_COOKIE_DOMAIN must be set.");
     if domain.is_empty() {
         panic!("JWT_COOKIE_DOMAIN must not be empty.");
     }
@@ -50,7 +52,8 @@ fn set_domain() -> String {
 
 fn set_redis_host() -> String {
     dotenv().ok();
-    let redis_host = std_env::var("REDIS_HOST_NAME").expect("REDIS_HOST_NAME must be set.");
+    let redis_host =
+        std_env::var(env::REDIS_HOST_NAME_ENV_VAR).expect("REDIS_HOST_NAME must be set.");
     if redis_host.is_empty() {
         panic!("REDIS_HOST_NAME must not be empty.");
     }
@@ -60,6 +63,14 @@ fn set_redis_host() -> String {
 pub const JWT_COOKIE_NAME: &str = "jwt";
 pub const DEFAULT_REDIS_HOSTNAME: &str = "127.0.0.1";
 
+pub mod env {
+    pub const DATABASE_URL_ENV_VAR: &str = "DATABASE_URL";
+    pub const JWT_SECRET_ENV_VAR: &str = "JWT_SECRET";
+    pub const REDIS_HOST_NAME_ENV_VAR: &str = "REDIS_HOST_NAME";
+    pub const POSTMARK_AUTH_TOKEN_ENV_VAR: &str = "POSTMARK_AUTH_TOKEN";
+    pub const JWT_COOKIE_DOMAIN_ENV_VAR: &str = "JWT_COOKIE_DOMAIN";
+}
+
 pub mod prod {
     pub const APP_ADDRESS: &str = "0.0.0.0:3000";
 
@@ -67,7 +78,7 @@ pub mod prod {
         use std::time::Duration;
 
         pub const BASE_URL: &str = "https://api.postmarkapp.com/email";
-        pub const SENDER: &str = "djdtahoe@gmail.com";
+        pub const SENDER: &str = "dennis@durling.net";
         pub const TIMEOUT: Duration = std::time::Duration::from_millis(1000);
     }
 }
