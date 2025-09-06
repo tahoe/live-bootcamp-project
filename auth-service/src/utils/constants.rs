@@ -68,7 +68,7 @@ pub mod prod {
 
         pub const BASE_URL: &str = "https://api.postmarkapp.com/email";
         pub const SENDER: &str = "djdtahoe@gmail.com";
-        pub const TIMEOUT: Duration = std::time::Duration::from_millis(10);
+        pub const TIMEOUT: Duration = std::time::Duration::from_millis(1000);
     }
 }
 
@@ -79,6 +79,6 @@ pub mod test {
     pub mod email_client {
         use std::time::Duration;
         pub const SENDER: &str = "test@email.com";
-        pub const TIMEOUT: Duration = std::time::Duration::from_millis(200);
+        pub const TIMEOUT: Duration = std::time::Duration::from_millis(2000);
     }
 }
